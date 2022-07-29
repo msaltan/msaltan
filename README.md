@@ -1,7 +1,7 @@
 - 👋 Hi, I’m @msaltan
-- 👀 I’m interested in Software Architecture, Web & Mobile Application Development,CMS,Workflow,ETL,BPM Development
-- 🌱 I’m currently learning Terraform,Kubernetes,MultiCloud,Docker
-- 💞️ I’m looking to collaborate on Workflow,ETL,BPM Development
+- 👀 I’m interested in Big Data, Software Architecture, Web & Mobile Application Development, CMS, Workflow, ETL, ELT, BPM Development
+- 🌱 I’m currently learning Econometrics, Statistics, and Data Analysis
+- 💞️ I’m looking to collaborate on Workflow, ETL, ELT, BPM Development
 - 📫 You can reach me at mikailsaltan@hotmail.com
 
 <!---
