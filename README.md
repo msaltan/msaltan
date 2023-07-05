@@ -3,6 +3,7 @@
 - 🌱 I’m currently learning Econometrics, Statistics, and Data Analysis
 - 💞️ I’m looking to collaborate on Workflow, ETL, ELT, BPM Development
 - 📫 You can reach me at mikailsaltan@hotmail.com
+- CJQdaCnopZ
  
 <!---
 msaltan/msaltan is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
