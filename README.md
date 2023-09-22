@@ -4,6 +4,9 @@
 - 💞️ I’m looking to collaborate on Workflow, ETL, ELT, BPM Development
 - 📫 You can reach me at mikailsaltan@hotmail.com
 - CJQdaCnopZ
+- v6feC9m4bgq7wLKf CnJVNfmnKdeB2n2Yh9znIW37w1AF4OFI
+- WmKKVkqRbLXTUUETYrjy wc7yLPloO638RU8uGCffgIZAEJ5K60lxb4Ht8E6k
+
  
 <!---
 msaltan/msaltan is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
