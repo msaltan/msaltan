@@ -7,6 +7,8 @@
 - v6feC9m4bgq7wLKf CnJVNfmnKdeB2n2Yh9znIW37w1AF4OFI
 - WmKKVkqRbLXTUUETYrjy wc7yLPloO638RU8uGCffgIZAEJ5K60lxb4Ht8E6k
 - kubectl --namespace=spark-operator port-forward service/proxy-public 8080:http
+- kubectl minio proxy -n minio-operator 2>&1 >/dev/null &
+- export PATH="/home/infotelica/.krew//bin:$PATH"
  
  
 
