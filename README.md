@@ -9,6 +9,8 @@
 - kubectl --namespace=spark-operator port-forward service/proxy-public 8080:http
 - kubectl minio proxy -n minio-operator 2>&1 >/dev/null &
 - export PATH="/home/infotelica/.krew//bin:$PATH"
+-    http://127.0.0.1:8888/lab?token=6316da5ce98216c85d1e5de61621fc72c86c147baab30258
+
  
  
 
