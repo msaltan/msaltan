@@ -1,0 +1,71 @@
+--- 
+version: '3'
+services:
+   # Apache Nifi: Data extraction, Transformation and load service.
+   nifi:
+         hostname: mynifix
+         container_name: nifi_containerx
+         image: 'apache/nifi:1.23.0'  # latest image as of 2021-11-08.
+         ports:
+             - '18443:8443'
+         networks:
+             - nifinetworkx
+         volumes:
+             - nifix-database_repository:/opt/nifi/nifi-current/database_repository
+             - nifix-flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+             - nifix-content_repository:/opt/nifi/nifi-current/content_repository
+             - nifix-provenance_repository:/opt/nifi/nifi-current/provenance_repository
+             - nifix-conf:/opt/nifi/nifi-current/conf
+             - nifix-state:/opt/nifi/nifi-current/state  
+             - ../nifi/nifidrivers:/opt/nifi/nifi-current/nifidrivers		 
+             - ../nifi/logs:/opt/nifi/nifi-current/logs  
+         environment:
+             - SINGLE_USER_CREDENTIALS_USERNAME=admin
+             - SINGLE_USER_CREDENTIALS_PASSWORD=ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
+             - NIFI_WEB_HTTPS_PORT=8443
+             - NIFI_WEB_PROXY_HOST=10.100.5.125:18443	 
+             - NIFI_JVM_HEAP_INIT=1g
+             - NIFI_JVM_HEAP_MAX=8g 
+         restart: on-failure
+         healthcheck:
+             test: ["CMD", "curl", "-f", "https://mynifix:18443/nifi/"]
+             interval: 30s
+             timeout: 20s
+             retries: 3
+
+   # Nifi-Registry: Version control for Nifi Flows.
+   registry:
+         hostname: mynifiregistryx
+         container_name: registry_containerx
+         image: 'apache/nifi-registry:1.23.0'  
+         restart: always
+         ports:
+             - '28080:18080'
+         environment:
+             - LOG_LEVEL=INFO
+             - NIFI_REGISTRY_DB_DIR=/opt/nifi-registry/nifi-registry-current/database
+             - NIFI_REGISTRY_FLOW_PROVIDER=file
+             - NIFI_REGISTRY_FLOW_STORAGE_DIR=/opt/nifi-registry/nifi-registry-current/flow_storage
+         volumes:
+             - ../nifi/nifi_registry/database:/opt/nifi-registry/nifi-registry-current/database
+             - ../nifi/nifi_registry/flow_storage:/opt/nifi-registry/nifi-registry-current/flow_storage
+         networks:
+             - nifinetworkx
+         healthcheck:
+             test: ["CMD", "curl", "-f", "http://mynifiregistryx:28080/nifi-registry/"]
+             interval: 30s
+             timeout: 20s
+             retries: 3
+# Volumes 
+volumes:
+  nifix-database_repository:
+  nifix-flowfile_repository:
+  nifix-content_repository:
+  nifix-provenance_repository:
+  nifix-conf:
+  nifix-state:   
+
+# Network Bridge Connection
+networks:
+  nifinetworkx:
+    driver: bridge			 
