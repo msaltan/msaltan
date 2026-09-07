@@ -85,3 +85,13 @@ Yeni oluşan pod'un loglarından bağlantının başarılı olduğunu doğrulay�
 kubectl -n keycloak logs -f job/keycloak-main-keycloak-config-cli
 
 ```
+
+
+
+kubectl -n keycloak get pods -o wide
+kubectl -n keycloak get svc keycloak-main-headless -o wide
+kubectl -n keycloak get endpoints keycloak-main-headless -o wide
+kubectl -n keycloak get networkpolicy
+kubectl -n keycloak describe networkpolicy
+
+
