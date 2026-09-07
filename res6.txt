@@ -176,6 +176,7 @@ curl -v --connect-timeout 5 http://10.42.0.244:8080/
 < 
 * Connection #0 to host 10.42.0.244 left intact
 
+10.42.0.244     keycloak-main-headless.keycloak.svc.cluster.local
 
 
 
