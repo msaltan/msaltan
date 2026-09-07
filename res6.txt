@@ -141,13 +141,43 @@ kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-pd4vf -- \
   getent hosts keycloak-main-headless
 kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-pd4vf -- \
   curl -v --connect-timeout 5 http://10.42.0.244:8080/
-kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-pd4vf -- \
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-8fz8z -- \
   curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
 curl -v --connect-timeout 5 http://10.42.0.244:8080/
 
 kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-pd4vf -- sh
 getent hosts keycloak-main-headless
 curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
+
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-jrbtn --   curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
+error: Internal error occurred: Internal error occurred: error executing command in container: failed to exec in container: failed to start exec "cdd2c9c3439d0a398e3a8cbb7c470f3a049d41933370765c31970d1530e98e08": OCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH
+
+
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-8fz8z --   curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
+error: Internal error occurred: Internal error occurred: error executing command in container: failed to exec in container: failed to start exec "e02fc6fa7232532fe1227e8e94739ec68eb012b920f076fa355a1a4f94884bd2": OCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH
+
+
+curl -v --connect-timeout 5 http://10.42.0.244:8080/
+*   Trying 10.42.0.244:8080...
+* Connected to 10.42.0.244 (10.42.0.244) port 8080 (#0)
+> GET / HTTP/1.1
+> Host: 10.42.0.244:8080
+> User-Agent: curl/7.76.1
+> Accept: */*
+> 
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 302 Found
+< Location: https://keycloak.iettaidos.sandbox/admin/
+< Referrer-Policy: no-referrer
+< Strict-Transport-Security: max-age=31536000; includeSubDomains
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< content-length: 0
+< 
+* Connection #0 to host 10.42.0.244 left intact
+
+
+
 
 curl -v --connect-timeout 5 http://10.42.0.244:8080/
 curl -v --connect-timeout 5 http://10.42.0.244:8080/
