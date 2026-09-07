@@ -85,6 +85,49 @@ Yeni oluşan pod'un loglarından bağlantının başarılı olduğunu doğrulay�
 kubectl -n keycloak logs -f job/keycloak-main-keycloak-config-cli
 
 ```
+kubectl -n keycloak get pods -o wide
+NAME                                      READY   STATUS    RESTARTS   AGE     IP            NODE                 NOMINATED NODE   READINESS GATES
+keycloak-main-0                           1/1     Running   0          34h     10.42.0.244   iett-lakehouse-dev   <none>           <none>
+keycloak-main-keycloak-config-cli-pd4vf   1/1     Running   0          95s     10.42.0.54    iett-lakehouse-dev   <none>           <none>
+keycloak-main-keycloak-config-cli-wvqkp   0/1     Error     0          3m56s   10.42.0.53    iett-lakehouse-dev   <none>           <none>
+kubectl -n keycloak get svc keycloak-main-headless -o wide
+NAME                     TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+keycloak-main-headless   ClusterIP   None         <none>        8080/TCP   34h   app.kubernetes.io/component=keycloak,app.kubernetes.io/instance=keycloak-main,app.kubernetes.io/name=keycloak
+kubectl -n keycloak get endpoints keycloak-main-headless -o wide
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                     ENDPOINTS          AGE
+keycloak-main-headless   10.42.0.244:8080   34h
+ kubectl -n keycloak get networkpolicy
+NAME            POD-SELECTOR                                                                                                    AGE
+keycloak-main   app.kubernetes.io/component=keycloak,app.kubernetes.io/instance=keycloak-main,app.kubernetes.io/name=keycloak   34h
+
+kubectl -n keycloak get networkpolicy
+NAME            POD-SELECTOR                                                                                                    AGE
+keycloak-main   app.kubernetes.io/component=keycloak,app.kubernetes.io/instance=keycloak-main,app.kubernetes.io/name=keycloak   34h
+[root@iett-lakehouse-dev ~]# kubectl -n keycloak describe networkpolicy
+Name:         keycloak-main
+Namespace:    keycloak
+Created on:   2026-09-06 12:17:18 +0300 +03
+Labels:       app.kubernetes.io/component=keycloak
+              app.kubernetes.io/instance=keycloak-main
+              app.kubernetes.io/managed-by=Helm
+              app.kubernetes.io/name=keycloak
+              app.kubernetes.io/version=26.1.3
+              helm.sh/chart=keycloak-24.4.11
+              helm.toolkit.fluxcd.io/name=keycloak-main
+              helm.toolkit.fluxcd.io/namespace=kubocd-system
+Annotations:  meta.helm.sh/release-name: keycloak-main
+              meta.helm.sh/release-namespace: keycloak
+Spec:
+  PodSelector:     app.kubernetes.io/component=keycloak,app.kubernetes.io/instance=keycloak-main,app.kubernetes.io/name=keycloak
+  Allowing ingress traffic:
+    To Port: 7800/TCP
+    To Port: 8080/TCP
+    From: <any> (traffic not restricted by source)
+  Allowing egress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    To: <any> (traffic not restricted by destination)
+  Policy Types: Ingress, Egress
 
 
 
