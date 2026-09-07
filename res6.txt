@@ -1,5 +1,19 @@
 `keycloak-config-cli` servis adresini `http://keycloak-main:8080` yapacak yamlları aşağıda bulabilirsiniz. Durumunuza göre **Flux/GitOps** yöntemi veya **Anlık K8s Patch (kubectl)** yöntemiyle uygulayabilirsiniz.
+Caused by: com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `de.adorsys.keycloak.config.model.RealmImport` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('300s')
+ at [Source: UNKNOWN; byte offset: #UNKNOWN]
+	at com.fasterxml.jackson.databind.exc.MismatchedInputException.from(MismatchedInputException.java:63)
+	at com.fasterxml.jackson.databind.DeserializationContext.reportInputMismatch(DeserializationContext.java:1754)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleMissingInstantiator(DeserializationContext.java:1379)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer._deserializeFromString(StdDeserializer.java:311)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromString(BeanDeserializerBase.java:1588)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeOther(BeanDeserializer.java:197)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:187)
+	at com.fasterxml.jackson.databind.ObjectMapper._convert(ObjectMapper.java:4619)
+	... 41 common frames omitted
 
+2026-09-07T22:58:33.524Z ERROR 1 --- [           main] d.a.k.config.KeycloakConfigRunner        : Error Response: java.lang.IllegalArgumentException: Cannot construct instance of `de.adorsys.keycloak.config.model.RealmImport` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('300s')
+ at [Source: UNKNOWN; byte offset: #UNKNOWN]
+2026-09-07T22:58:33.524Z  INFO 1 --- [           main] d.a.k.config.KeycloakConfigRunner        : keycloak-config-cli ran in 00:00.794.
 ---
 
   Normal   HelmChartCreated  4m37s  helm-controller  Created HelmChart/kubocd-system/kubocd-system-keycloak-main with SourceRef 'HelmRepository/kubocd-system/kcd-keycloak'
