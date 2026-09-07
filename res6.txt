@@ -192,11 +192,17 @@ curl -v --connect-timeout 5 http://10.42.0.244:8080/
 
 
 
-kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-jrbtn -- \
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-fdlnq -- \
   sh -c 'cat /etc/resolv.conf'
-kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-jrbtn -- \
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-fdlnq -- \
   sh -c 'which wget; which busybox; which nc; which telnet'
 curl -v --connect-timeout 5 http://10.42.0.244:8080/
+
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-fdlnq -- \
+  sh -c 'cat /etc/resolv.conf'
+search keycloak.svc.cluster.local svc.cluster.local cluster.local
+nameserver 10.43.0.10
+options ndots:5
 
 
 
@@ -209,7 +215,15 @@ kubectl -n keycloak run net-debug \
 
 curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
 
-
+~ $ curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
+* Host keycloak-main-headless:8080 was resolved.
+* IPv6: (none)
+* IPv4: 10.42.0.244
+*   Trying 10.42.0.244:8080...
+* connect to 10.42.0.244 port 8080 from 10.42.0.67 port 51402 failed: Host is unreachable
+* Failed to connect to keycloak-main-headless port 8080 after 1 ms: Could not connect to server
+* closing connection #0
+curl: (7) Failed to connect to keycloak-main-headless port 8080 after 1 ms: Could not connect to server
 
 
 
