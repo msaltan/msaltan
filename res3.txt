@@ -1,0 +1,82 @@
+Hata, `keycloak-config-cli` Job'ının Keycloak sunucusuna DNS or ağ seviyesinde erişememesinden kaynaklanıyor (`java.net.NoRouteToHostException: No route to host`).
+
+`keycloak-main-headless:8080` adresine yapılan istek 120 saniye boyunca zaman aşımına uğradığı için Helm hook/Job başarısız oluyor.
+
+### 1. Root Cause (Kök Neden) Analizi
+
+Sorunun arkasında genellikle 3 ana neden yatar:
+
+1. **NetworkPolicy / CNI Engeli:** Job pod'unun Keycloak pod'una erişimi NetworkPolicy kuralları veya CNI kısıtlamaları yüzünden engelleniyor olabilir.
+2. **Keycloak Pod'larının Hazır Olmaması (Readiness/Startup):** Keycloak pod'u ayağa kalkamamış, `CrashLoopBackOff` durumunda kalmış veya henüz `8080` portunu dinlemiyor olabilir.
+3. **Headless Service / DNS Problemi:** Service tanımındaki selector'lar Keycloak pod'ları ile eşleşmiyor veya CoreDNS bu headless service (`keycloak-main-headless`) IP'sini çözemiyor.
+
+---
+
+### 2. Teşhis Adımları (Sorunun Kaynağını Bulma)
+
+Sırasıyla aşağıdaki komutları çalıştırarak duruma bakın:
+
+1. **Keycloak Pod Durumlarını Kontrol Edin:** 1. Adım.
+Keycloak pod'larının gerçekten çalışıp çalışmadığını doğrulamak için:
+
+```bash
+kubectl -n keycloak get pods -l app.kubernetes.io/name=keycloak
+
+```
+
+*Doğrulama:* Pod'ların `Running` ve `READY 1/1` olduğundan emin olun.
+
+
+2. **Service ve Endpoint Eşleşmesini Denetleyin:** 2. Adım.
+Headless Service'in arkasında IP tanımlı mı kontrol edin:
+
+```bash
+kubectl -n keycloak get endpoints keycloak-main-headless
+
+```
+
+*Doğrulama:* `ENDPOINTS` sütununda Keycloak pod'una ait IP adresinin göründüğünden emin olun (Boş görünüyorsa selector uyuşmazlığı vardır).
+
+
+3. **Geçici Test Pod'u ile Ağ Erişilebilirliğini Sınayın:** 3. Adım.
+Ağ veya DNS engelini doğrulamak için aynı namespace üzerinde hızlı bir curl pod'u çalıştırın:
+
+```bash
+kubectl -n keycloak run tmp-net-test --rm -i --tty --image=curlimages/curl -- curl -v http://keycloak-main-headless:8080/
+
+```
+
+*Doğrulama:* Eğer `No route to host` veya zaman aşımı alıyorsanız sorun kesinlikle CNI / NetworkPolicy veya Service IP yönlendirmesindedir.
+
+
+---
+
+### 3. Muhtemel Çözümler
+
+#### Senaryo A: NetworkPolicy Engeli Varsa
+
+Eğer cluster'da NetworkPolicy kullanılıyorsa, Job pod'unun Keycloak pod'u ile haberleşmesine izin veren bir kural tanımlayın veya `keycloak` değerlerinizdeki (values.yaml) NetworkPolicy ayarlarını güncelleyin.
+
+#### Senaryo B: Service Adı veya Port Yanlışlığı
+
+Helm değerlerinizde `keycloak-config-cli` konfigürasyonunu kontrol edin. Eğer Keycloak headless yerine normal service üzerinden dinliyorsa, `keycloak-config-cli`'ya verilen URL'yi değiştirmeniz gerekir:
+
+```yaml
+# keycloak-config-cli values.yaml örneği
+keycloak:
+  url: "http://keycloak-main:8080" # headless yerine normal service ismini deneyin
+
+```
+
+#### Senaryo C: Job Zaman Aşımı (Timeout) Süresini Artırma
+
+Keycloak veritabanı migration'ları vb. süreçler nedeniyle geç ayağa kalkıyorsa, bağlantı bekleme süresini artırabilirsiniz:
+
+```yaml
+keycloakConfigCli:
+  configuration:
+    keycloak.availability-check.timeout: 300s
+
+```
+
+---
