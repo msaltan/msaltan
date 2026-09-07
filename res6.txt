@@ -40,7 +40,20 @@ kubectl patch helmrelease keycloak-main -n keycloak --type=merge -p '{
 }'
 
 ```
-
+kubectl patch helmrelease keycloak-main -n keycloak --type=merge -p '{
+  "spec": {
+    "values": {
+      "keycloakConfigCli": {
+        "extraEnvVars": [
+          {
+            "name": "KEYCLOAK_URL",
+            "value": "http://keycloak-main:8080"
+          }
+        ]
+      }
+    }
+  }
+}'
 ---
 
 ### 3. İşlemi Tamamlama Adımları
