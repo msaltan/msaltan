@@ -1,0 +1,651 @@
+Name:         keycloak-main
+Namespace:    kubocd-system
+Labels:       <none>
+Annotations:  reconcile.fluxcd.io/forceAt: 2026-09-06T13:38:11.02016075+03:00
+              reconcile.fluxcd.io/requestedAt: 2026-09-06T13:38:11.02016075+03:00
+API Version:  helm.toolkit.fluxcd.io/v2
+Kind:         HelmRelease
+Metadata:
+  Creation Timestamp:  2026-09-06T09:17:16Z
+  Finalizers:
+    finalizers.fluxcd.io
+  Generation:  1
+  Owner References:
+    API Version:           kubocd.kubotal.io/v1alpha1
+    Block Owner Deletion:  true
+    Controller:            true
+    Kind:                  Release
+    Name:                  keycloak
+    UID:                   f3a94c39-84ac-4f1c-a543-3f84a11fb581
+  Resource Version:        661138
+  UID:                     f560f7fc-3287-43c4-ba2f-cba061dc2b73
+Spec:
+  Chart:
+    Spec:
+      Chart:               keycloak
+      Interval:            30m0s
+      Reconcile Strategy:  ChartVersion
+      Source Ref:
+        Kind:       HelmRepository
+        Name:       kcd-keycloak
+        Namespace:  kubocd-system
+      Version:      24.4.11
+  Install:
+    Create Namespace:  true
+    Strategy:
+      Name:            RetryOnFailure
+      Retry Interval:  1m0s
+  Interval:            30m0s
+  Release Name:        keycloak-main
+  Target Namespace:    keycloak
+  Timeout:             10m0s
+  Upgrade:
+    Strategy:
+      Name:            RetryOnFailure
+      Retry Interval:  1m0s
+  Values:
+    Auth:
+      Admin Password:  admin
+      Admin User:      admin
+    Cache:
+      Enabled:  false
+    External Database:
+      Database:  keycloak
+      Host:      postgresql-instance-rw.cnpg-system.svc.cluster.local
+      Port:      5432
+    Extra Env Vars:
+      Name:   KC_DB
+      Value:  postgres
+      Name:   KC_DB_URL
+      Value:  jdbc:postgresql://postgresql-instance-rw.cnpg-system.svc.cluster.local:5432/keycloak
+      Name:   KC_DB_USERNAME
+      Value From:
+        Secret Key Ref:
+          Key:   username
+          Name:  creds-keycloak-db
+      Name:      KC_DB_PASSWORD
+      Value From:
+        Secret Key Ref:
+          Key:   password
+          Name:  creds-keycloak-db
+      Name:      KC_METRICS_ENABLED
+      Value:     false
+      Name:      KC_TRACING_ENABLED
+      Value:     false
+      Name:      KC_CACHE
+      Value:     local
+    Global:
+      Security:
+        Allow Insecure Images:  true
+    Image:
+      Registry:    quay.io
+      Repository:  okdp/sandbox-images/keycloak
+      Tag:         26.1.3-debian-12-r0
+    Ingress:
+      Annotations:
+        cert-manager.io/cluster-issuer:                  default-issuer
+        nginx.ingress.kubernetes.io/backend-protocol:    HTTP
+        nginx.ingress.kubernetes.io/force-ssl-redirect:  true
+      Enabled:                                           true
+      Hostname:                                          keycloak.iettaidos.sandbox
+      Ingress Class Name:                                nginx
+      Tls:                                               true
+    Keycloak Config Cli:
+      Configuration:
+        master.json:  {
+  "realm": "master",
+  "enabled": true,
+  "displayName": "OKDP internal Realm",
+  "users": [
+    {
+      "username": "bob",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "bob@okdp.io",
+      "firstName": "bob",
+      "lastName": "bob",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "bob"
+        }
+      ],
+      "realmRoles": ["data_engineer"]
+    },
+    {
+      "username": "mark",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "mark@okdp.io",
+      "firstName": "mark",
+      "lastName": "mark",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "mark"
+        }
+      ],
+      "realmRoles": ["data_scientist"]
+    },
+    {
+      "username": "nina",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "nina@okdp.io",
+      "firstName": "nina",
+      "lastName": "nina",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "nina"
+        }
+      ],
+      "realmRoles": ["business_analyst"]
+    },
+    {
+      "username": "grace",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "grace@okdp.io",
+      "firstName": "grace",
+      "lastName": "grace",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "grace"
+        }
+      ],
+      "realmRoles": ["data_steward"]
+    },
+    {
+      "username": "alice",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "alice@okdp.io",
+      "firstName": "alice",
+      "lastName": "alice",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alice"
+        }
+      ],
+      "realmRoles": ["platform_admin","polaris_service_admin","polaris_catalog_admin"]
+    },
+    {
+      "username": "eve",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "eve@okdp.io",
+      "firstName": "eve",
+      "lastName": "eve",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "eve"
+        }
+      ],
+      "realmRoles": ["auditor"]
+    },
+    {
+      "username": "adm",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "adm@okdp.io",
+      "firstName": "adm",
+      "lastName": "adm",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "adm"
+        }
+      ],
+      "realmRoles": ["platform_admin","polaris_service_admin","polaris_catalog_admin"]
+    },
+    {
+      "username": "svc-spark-etl-polaris-writer",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "",
+      "firstName": "",
+      "lastName": "",
+      "serviceAccountClientId": "svc-spark-etl-polaris-writer",
+      "realmRoles": ["data_engineer","data_scientist","business_analyst"]
+    },
+    {
+      "username": "svc-polaris-api-admin",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "",
+      "firstName": "",
+      "lastName": "",
+      "serviceAccountClientId": "svc-polaris-api-admin",
+      "realmRoles": ["polaris_service_admin","polaris_catalog_admin"]
+    },
+    {
+      "username": "svc-trino-polaris-writer",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "",
+      "firstName": "",
+      "lastName": "",
+      "serviceAccountClientId": "svc-trino-polaris-writer",
+      "realmRoles": ["platform_admin","polaris_service_admin","polaris_catalog_admin"]
+    }
+  ],
+  "groups": [
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "data_engineer"
+      },
+      {
+        "name": "data_scientist"
+      },
+      {
+        "name": "business_analyst"
+      },
+      {
+        "name": "platform_admin"
+      },
+      {
+        "name": "data_steward"
+      },
+      {
+        "name": "auditor"
+      },
+      {
+        "name": "polaris_service_admin"
+      },
+      {
+        "name": "polaris_catalog_admin"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "okdp-server",
+      "name": "okdp-server",
+      "publicClient": true,
+      "redirectUris": [
+        "https://okdp-server.iettaidos.sandbox/swagger/oauth2-redirect.html"
+      ],
+      "webOrigins": [
+        "https://okdp-server.iettaidos.sandbox"
+      ]
+    },
+    {
+      "clientId": "okdp-ui",
+      "name": "okdp-ui",
+      "publicClient": true,
+      "redirectUris": [
+        "https://aidos-ui.iettaidos.sandbox/index.html",
+        "https://aidos-ui.iettaidos.sandbox/silent-refresh.html"
+      ],
+      "webOrigins": [
+        "https://aidos-ui.iettaidos.sandbox"
+      ]
+    },
+    {
+      "clientId": "polaris-console",
+      "name": "polaris-console",
+      "publicClient": true,
+      "redirectUris": [
+        "https://polaris-console-default.iettaidos.sandbox/auth/callback"
+      ],
+      "webOrigins": [
+        "https://polaris-console-default.iettaidos.sandbox"
+      ]
+    },
+    {
+      "clientId": "seaweedfs-s3",
+      "name": "seaweedfs-s3",
+      "publicClient": true,
+      "redirectUris": [
+      ],
+      "webOrigins": [
+      ]
+    },
+    {
+      "clientId": "superset",
+      "name": "superset",
+      "secret": "mySupersetSecret",
+      "redirectUris": [
+        "https://*"
+      ],
+      "webOrigins": [
+        "https://*"
+      ],
+      "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+      "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+    },
+    {
+      "clientId": "jupyterhub",
+      "name": "jupyterhub",
+      "secret": "myJupyterHubSecret",
+      "redirectUris": [
+        "https://*"
+      ],
+      "webOrigins": [
+        "https://*"
+      ],
+      "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+      "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+    },
+    {
+      "clientId": "trino",
+      "name": "trino",
+      "secret": "myTrinoSecret",
+      "redirectUris": [
+        "https://*"
+      ],
+      "webOrigins": [
+        "https://*"
+      ],
+      "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+      "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+    },
+    {
+      "clientId": "spark-history",
+      "name": "spark-history",
+      "secret": "mySparkHistorySecret",
+      "redirectUris": [
+        "https://*"
+      ],
+      "webOrigins": [
+        "https://*"
+      ],
+      "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+      "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+    },
+    {
+      "clientId": "superset-trino",
+      "name": "superset-trino",
+      "secret": "mySupersetTrinoSecret",
+      "redirectUris": [
+        "https://*"
+      ],
+      "webOrigins": [
+        "https://*"
+      ],
+      "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+      "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+    },
+    {
+      "clientId": "polaris",
+      "name": "polaris",
+      "secret": "myPolarisSecret",
+      "redirectUris": [
+        "https://*"
+      ],
+      "webOrigins": [
+        "https://*"
+      ],
+      "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+      "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"],
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "airflow",
+      "name": "airflow",
+      "secret": "myAirflowSecret",
+      "redirectUris": [
+        "https://*"
+      ],
+      "webOrigins": [
+        "https://*"
+      ],
+      "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+      "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+    },
+    {
+      "clientId": "svc-trino-polaris-writer",
+      "name": "svc-trino-polaris-writer",
+      "secret": "myTrinoPolarisSecret",
+      "redirectUris": [
+      ],
+      "webOrigins": [
+      ],
+      "defaultClientScopes": ["groups","roles","profile","email"],
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "svc-trino-examples-writer",
+      "name": "svc-trino-examples-writer",
+      "secret": "myTrinoExamplesSecret",
+      "redirectUris": [
+      ],
+      "webOrigins": [
+      ],
+      "defaultClientScopes": ["groups","roles","profile","email"],
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "svc-polaris-api-admin",
+      "name": "svc-polaris-api-admin",
+      "secret": "myPolarisAdminSecret",
+      "redirectUris": [
+      ],
+      "webOrigins": [
+      ],
+      "defaultClientScopes": ["groups","roles","profile","email"],
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "svc-spark-etl-polaris-writer",
+      "name": "svc-spark-etl-polaris-writer",
+      "secret": "mySparkAppSecret",
+      "redirectUris": [
+      ],
+      "webOrigins": [
+      ],
+      "defaultClientScopes": ["groups","roles","profile","email"],
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    }
+  ],
+  "clientScopes": [
+    {
+      "id": "groups-scope-id",
+      "name": "groups",
+      "description": "Groups scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "display.on.consent.screen": "true",
+        "include.in.token.scope": "false"
+      },
+      "protocolMappers": [
+        {
+          "id": "roles_map_to_groups-mapper-id",
+          "name": "roles_map_to_groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "access.token.claim": "true",
+            "claim.name": "groups",
+            "id.token.claim": "true",
+            "introspection.token.claim": "true",
+            "jsonType.label": "String",
+            "lightweight.claim": "true",
+            "multivalued": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "accessTokenLifespan": 3600
+}
+
+      Enabled:  true
+      Image:
+        Registry:    quay.io
+        Repository:  okdp/sandbox-images/keycloak-config-cli
+        Tag:         6.4.0-debian-12-r0
+    Postgresql:
+      Enabled:   false
+    Production:  false
+    Resources:
+      Limits:
+        Cpu:     1
+        Memory:  4Gi
+      Requests:
+        Cpu:     500m
+        Memory:  2Gi
+Status:
+  Conditions:
+    Last Transition Time:  2026-09-07T12:11:24Z
+    Message:               Running 'upgrade' action with timeout of 10m0s
+    Observed Generation:   1
+    Reason:                Progressing
+    Status:                True
+    Type:                  Reconciling
+    Last Transition Time:  2026-09-07T12:11:24Z
+    Message:               Running 'upgrade' action with timeout of 10m0s
+    Observed Generation:   1
+    Reason:                Progressing
+    Status:                Unknown
+    Type:                  Ready
+    Last Transition Time:  2026-09-06T09:28:16Z
+    Message:               Helm upgrade failed for release keycloak/keycloak-main with chart keycloak@24.4.11: post-upgrade hooks failed: failed early due to stalled resources: [Job/keycloak/keycloak-main-keycloak-config-cli status: 'Failed']
+    Observed Generation:   1
+    Reason:                UpgradeFailed
+    Status:                False
+    Type:                  Released
+  Failures:                286
+  Helm Chart:              kubocd-system/kubocd-system-keycloak-main
+  History:
+    Action:          upgrade
+    API Version:     v2
+    App Version:     26.1.3
+    Chart Name:      keycloak
+    Chart Version:   24.4.11
+    Config Digest:   sha256:143d716dc36d1d1773b19e4bcd7c7d30c04a4c304e4cd75667faf2949da784f5
+    Digest:          sha256:77f91a3f8211a3d9a63fdcc0f66d8afc845c1443b9216402fd0d7b2aa37b5f07
+    First Deployed:  2026-09-06T09:17:18Z
+    Last Deployed:   2026-09-07T12:05:47Z
+    Name:            keycloak-main
+    Namespace:       keycloak
+    Status:          failed
+    Version:         286
+    Action:          upgrade
+    API Version:     v2
+    App Version:     26.1.3
+    Chart Name:      keycloak
+    Chart Version:   24.4.11
+    Config Digest:   sha256:143d716dc36d1d1773b19e4bcd7c7d30c04a4c304e4cd75667faf2949da784f5
+    Digest:          sha256:de83f36d646ef95d1033cf79d764fc1c248b132bfd4dd1fc6299725a31552218
+    First Deployed:  2026-09-06T09:17:18Z
+    Last Deployed:   2026-09-07T12:00:07Z
+    Name:            keycloak-main
+    Namespace:       keycloak
+    Status:          failed
+    Version:         285
+    Action:          upgrade
+    API Version:     v2
+    App Version:     26.1.3
+    Chart Name:      keycloak
+    Chart Version:   24.4.11
+    Config Digest:   sha256:143d716dc36d1d1773b19e4bcd7c7d30c04a4c304e4cd75667faf2949da784f5
+    Digest:          sha256:7d60fa79b73b121328ee47c06ccdfa5f8d709d61f588d2d3f36bd79d0c237557
+    First Deployed:  2026-09-06T09:17:18Z
+    Last Deployed:   2026-09-07T11:54:27Z
+    Name:            keycloak-main
+    Namespace:       keycloak
+    Status:          failed
+    Version:         284
+    Action:          upgrade
+    API Version:     v2
+    App Version:     26.1.3
+    Chart Name:      keycloak
+    Chart Version:   24.4.11
+    Config Digest:   sha256:143d716dc36d1d1773b19e4bcd7c7d30c04a4c304e4cd75667faf2949da784f5
+    Digest:          sha256:2bfeca53efe700de5aacc2a17b95bf98089c64e00c823606fd08ba3d2a65e888
+    First Deployed:  2026-09-06T09:17:18Z
+    Last Deployed:   2026-09-07T11:48:49Z
+    Name:            keycloak-main
+    Namespace:       keycloak
+    Status:          failed
+    Version:         283
+    Action:          upgrade
+    API Version:     v2
+    App Version:     26.1.3
+    Chart Name:      keycloak
+    Chart Version:   24.4.11
+    Config Digest:   sha256:143d716dc36d1d1773b19e4bcd7c7d30c04a4c304e4cd75667faf2949da784f5
+    Digest:          sha256:1c8699b46798ede994545a1c47f61ccd151225890dd1882f66ad4b68e4572991
+    First Deployed:  2026-09-06T09:17:18Z
+    Last Deployed:   2026-09-07T11:43:12Z
+    Name:            keycloak-main
+    Namespace:       keycloak
+    Status:          failed
+    Version:         282
+  Install Failures:  1
+  Inventory:
+    Entries:
+      Id:                                  keycloak_keycloak-main_networking.k8s.io_NetworkPolicy
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main_policy_PodDisruptionBudget
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main__ServiceAccount
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main-externaldb__Secret
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main__Secret
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main-env-vars__ConfigMap
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main-keycloak-config-cli-configmap__ConfigMap
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main-headless__Service
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main__Service
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main_apps_StatefulSet
+      V:                                   v1
+      Id:                                  keycloak_keycloak-main_networking.k8s.io_Ingress
+      V:                                   v1
+  Last Attempted Config Digest:            sha256:143d716dc36d1d1773b19e4bcd7c7d30c04a4c304e4cd75667faf2949da784f5
+  Last Attempted Generation:               1
+  Last Attempted Release Action:           upgrade
+  Last Attempted Release Action Duration:  4m36.852512064s
+  Last Attempted Revision:                 24.4.11
+  Last Handled Force At:                   2026-09-06T13:38:11.02016075+03:00
+  Last Handled Reconcile At:               2026-09-06T13:38:11.02016075+03:00
+  Observed Generation:                     1
+  Storage Namespace:                       kubocd-system
+  Upgrade Failures:                        285
+Events:
+  Type     Reason         Age                   From             Message
+  ----     ------         ----                  ----             -------
+  Warning  UpgradeFailed  5m1s (x276 over 25h)  helm-controller  (combined from similar events): Helm upgrade failed for release keycloak/keycloak-main with chart keycloak@24.4.11: post-upgrade hooks failed: failed early due to stalled resources: [Job/keycloak/keycloak-main-keycloak-config-cli status: 'Failed']
+
+Last Helm logs:
+
+2026-09-07T12:05:47.906020558Z: Patched resource: {"gvk":"/v1, Kind=ConfigMap","name":"keycloak-main-keycloak-config-cli-configmap","namespace":"keycloak"}
+2026-09-07T12:05:47.910235367Z: Patched resource: {"gvk":"/v1, Kind=Service","name":"keycloak-main-headless","namespace":"keycloak"}
+2026-09-07T12:05:47.914218431Z: Patched resource: {"gvk":"/v1, Kind=Service","name":"keycloak-main","namespace":"keycloak"}
+2026-09-07T12:05:47.926059882Z: Patched resource: {"gvk":"apps/v1, Kind=StatefulSet","name":"keycloak-main","namespace":"keycloak"}
+2026-09-07T12:05:47.936648543Z: Patched resource: {"gvk":"networking.k8s.io/v1, Kind=Ingress","name":"keycloak-main","namespace":"keycloak"}
+2026-09-07T12:05:48.044809745Z: starting delete resource: {"kind":"Job","name":"keycloak-main-keycloak-config-cli","namespace":"keycloak"}
+2026-09-07T12:05:48.0966277Z: creating resource(s): {"resources":1}
+2026-09-07T12:05:48.096635037Z: using server-side apply for resource creation: {"dryRun":false,"fieldValidationDirective":"Strict","forceConflicts":false}
+2026-09-07T12:05:48.101357274Z: Created resource via patch: {"gvk":"batch/v1, Kind=Job","name":"keycloak-main-keycloak-config-cli","namespace":"keycloak"}
+2026-09-07T12:10:23.105378519Z: warning: upgrade failed: {"error":{},"name":"keycloak-main"}
+[root@localhost myplatform-packages]#
