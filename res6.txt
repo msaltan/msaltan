@@ -19,7 +19,7 @@ spec:
         url: "http://keycloak-main:8080"
 
 ```
-
+docker pull quay.io/aidos/xsandbox-dependencies/keycloak:24.4.11-p08
 ---
 
 ### 2. `kubectl` ile Anlık Patch (Hızlı Test İçin)
