@@ -183,3 +183,34 @@ curl -v --connect-timeout 5 http://10.42.0.244:8080/
 curl -v --connect-timeout 5 http://10.42.0.244:8080/
 curl -v --connect-timeout 5 http://10.42.0.244:8080/
 
+
+
+
+
+
+
+
+
+
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-jrbtn -- \
+  sh -c 'cat /etc/resolv.conf'
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-jrbtn -- \
+  sh -c 'which wget; which busybox; which nc; which telnet'
+curl -v --connect-timeout 5 http://10.42.0.244:8080/
+
+
+
+
+kubectl -n keycloak run net-debug \
+  --rm -it \
+  --restart=Never \
+  --image=curlimages/curl:8.10.1 \
+  -- sh
+
+curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
+
+
+
+
+
+
