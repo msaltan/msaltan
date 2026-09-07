@@ -137,4 +137,18 @@ kubectl -n keycloak get endpoints keycloak-main-headless -o wide
 kubectl -n keycloak get networkpolicy
 kubectl -n keycloak describe networkpolicy
 
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-pd4vf -- \
+  getent hosts keycloak-main-headless
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-pd4vf -- \
+  curl -v --connect-timeout 5 http://10.42.0.244:8080/
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-pd4vf -- \
+  curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
+curl -v --connect-timeout 5 http://10.42.0.244:8080/
+
+kubectl -n keycloak exec -it keycloak-main-keycloak-config-cli-pd4vf -- sh
+getent hosts keycloak-main-headless
+curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
+
+curl -v --connect-timeout 5 http://10.42.0.244:8080/
+curl -v --connect-timeout 5 http://10.42.0.244:8080/
 
