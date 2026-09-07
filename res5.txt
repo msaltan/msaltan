@@ -1,0 +1,464 @@
+auth:
+  adminPassword: admin
+  adminUser: admin
+cache:
+  enabled: false
+externalDatabase:
+  database: keycloak
+  host: postgresql-instance-rw.cnpg-system.svc.cluster.local
+  port: "5432"
+extraEnvVars:
+  - name: KC_DB
+    value: postgres
+  - name: KC_DB_URL
+    value: jdbc:postgresql://postgresql-instance-rw.cnpg-system.svc.cluster.local:5432/keycloak
+  - name: KC_DB_USERNAME
+    valueFrom:
+      secretKeyRef:
+        key: username
+        name: creds-keycloak-db
+  - name: KC_DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: password
+        name: creds-keycloak-db
+  - name: KC_METRICS_ENABLED
+    value: "false"
+  - name: KC_TRACING_ENABLED
+    value: "false"
+  - name: KC_CACHE
+    value: local
+global:
+  security:
+    allowInsecureImages: true
+image:
+  registry: quay.io
+  repository: okdp/sandbox-images/keycloak
+  tag: 26.1.3-debian-12-r0
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: default-issuer
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  enabled: true
+  hostname: keycloak.iettaidos.sandbox
+  ingressClassName: nginx
+  tls: true
+keycloakConfigCli:
+  configuration:
+    master.json: |
+      {
+        "realm": "master",
+        "enabled": true,
+        "displayName": "OKDP internal Realm",
+        "users": [
+          {
+            "username": "bob",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "bob@okdp.io",
+            "firstName": "bob",
+            "lastName": "bob",
+            "credentials": [
+              {
+                "type": "password",
+                "value": "bob"
+              }
+            ],
+            "realmRoles": ["data_engineer"]
+          },
+          {
+            "username": "mark",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "mark@okdp.io",
+            "firstName": "mark",
+            "lastName": "mark",
+            "credentials": [
+              {
+                "type": "password",
+                "value": "mark"
+              }
+            ],
+            "realmRoles": ["data_scientist"]
+          },
+          {
+            "username": "nina",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "nina@okdp.io",
+            "firstName": "nina",
+            "lastName": "nina",
+            "credentials": [
+              {
+                "type": "password",
+                "value": "nina"
+              }
+            ],
+            "realmRoles": ["business_analyst"]
+          },
+          {
+            "username": "grace",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "grace@okdp.io",
+            "firstName": "grace",
+            "lastName": "grace",
+            "credentials": [
+              {
+                "type": "password",
+                "value": "grace"
+              }
+            ],
+            "realmRoles": ["data_steward"]
+          },
+          {
+            "username": "alice",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "alice@okdp.io",
+            "firstName": "alice",
+            "lastName": "alice",
+            "credentials": [
+              {
+                "type": "password",
+                "value": "alice"
+              }
+            ],
+            "realmRoles": ["platform_admin","polaris_service_admin","polaris_catalog_admin"]
+          },
+          {
+            "username": "eve",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "eve@okdp.io",
+            "firstName": "eve",
+            "lastName": "eve",
+            "credentials": [
+              {
+                "type": "password",
+                "value": "eve"
+              }
+            ],
+            "realmRoles": ["auditor"]
+          },
+          {
+            "username": "adm",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "adm@okdp.io",
+            "firstName": "adm",
+            "lastName": "adm",
+            "credentials": [
+              {
+                "type": "password",
+                "value": "adm"
+              }
+            ],
+            "realmRoles": ["platform_admin","polaris_service_admin","polaris_catalog_admin"]
+          },
+          {
+            "username": "svc-spark-etl-polaris-writer",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "",
+            "firstName": "",
+            "lastName": "",
+            "serviceAccountClientId": "svc-spark-etl-polaris-writer",
+            "realmRoles": ["data_engineer","data_scientist","business_analyst"]
+          },
+          {
+            "username": "svc-polaris-api-admin",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "",
+            "firstName": "",
+            "lastName": "",
+            "serviceAccountClientId": "svc-polaris-api-admin",
+            "realmRoles": ["polaris_service_admin","polaris_catalog_admin"]
+          },
+          {
+            "username": "svc-trino-polaris-writer",
+            "enabled": true,
+            "emailVerified": true,
+            "email": "",
+            "firstName": "",
+            "lastName": "",
+            "serviceAccountClientId": "svc-trino-polaris-writer",
+            "realmRoles": ["platform_admin","polaris_service_admin","polaris_catalog_admin"]
+          }
+        ],
+        "groups": [
+        ],
+        "roles": {
+          "realm": [
+            {
+              "name": "data_engineer"
+            },
+            {
+              "name": "data_scientist"
+            },
+            {
+              "name": "business_analyst"
+            },
+            {
+              "name": "platform_admin"
+            },
+            {
+              "name": "data_steward"
+            },
+            {
+              "name": "auditor"
+            },
+            {
+              "name": "polaris_service_admin"
+            },
+            {
+              "name": "polaris_catalog_admin"
+            }
+          ]
+        },
+        "clients": [
+          {
+            "clientId": "okdp-server",
+            "name": "okdp-server",
+            "publicClient": true,
+            "redirectUris": [
+              "https://okdp-server.iettaidos.sandbox/swagger/oauth2-redirect.html"
+            ],
+            "webOrigins": [
+              "https://okdp-server.iettaidos.sandbox"
+            ]
+          },
+          {
+            "clientId": "okdp-ui",
+            "name": "okdp-ui",
+            "publicClient": true,
+            "redirectUris": [
+              "https://aidos-ui.iettaidos.sandbox/index.html",
+              "https://aidos-ui.iettaidos.sandbox/silent-refresh.html"
+            ],
+            "webOrigins": [
+              "https://aidos-ui.iettaidos.sandbox"
+            ]
+          },
+          {
+            "clientId": "polaris-console",
+            "name": "polaris-console",
+            "publicClient": true,
+            "redirectUris": [
+              "https://polaris-console-default.iettaidos.sandbox/auth/callback"
+            ],
+            "webOrigins": [
+              "https://polaris-console-default.iettaidos.sandbox"
+            ]
+          },
+          {
+            "clientId": "seaweedfs-s3",
+            "name": "seaweedfs-s3",
+            "publicClient": true,
+            "redirectUris": [
+            ],
+            "webOrigins": [
+            ]
+          },
+          {
+            "clientId": "superset",
+            "name": "superset",
+            "secret": "mySupersetSecret",
+            "redirectUris": [
+              "https://*"
+            ],
+            "webOrigins": [
+              "https://*"
+            ],
+            "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+            "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+          },
+          {
+            "clientId": "jupyterhub",
+            "name": "jupyterhub",
+            "secret": "myJupyterHubSecret",
+            "redirectUris": [
+              "https://*"
+            ],
+            "webOrigins": [
+              "https://*"
+            ],
+            "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+            "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+          },
+          {
+            "clientId": "trino",
+            "name": "trino",
+            "secret": "myTrinoSecret",
+            "redirectUris": [
+              "https://*"
+            ],
+            "webOrigins": [
+              "https://*"
+            ],
+            "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+            "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+          },
+          {
+            "clientId": "spark-history",
+            "name": "spark-history",
+            "secret": "mySparkHistorySecret",
+            "redirectUris": [
+              "https://*"
+            ],
+            "webOrigins": [
+              "https://*"
+            ],
+            "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+            "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+          },
+          {
+            "clientId": "superset-trino",
+            "name": "superset-trino",
+            "secret": "mySupersetTrinoSecret",
+            "redirectUris": [
+              "https://*"
+            ],
+            "webOrigins": [
+              "https://*"
+            ],
+            "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+            "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+          },
+          {
+            "clientId": "polaris",
+            "name": "polaris",
+            "secret": "myPolarisSecret",
+            "redirectUris": [
+              "https://*"
+            ],
+            "webOrigins": [
+              "https://*"
+            ],
+            "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+            "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"],
+            "serviceAccountsEnabled": true,
+            "standardFlowEnabled": false,
+            "implicitFlowEnabled": false,
+            "directAccessGrantsEnabled": false
+          },
+          {
+            "clientId": "airflow",
+            "name": "airflow",
+            "secret": "myAirflowSecret",
+            "redirectUris": [
+              "https://*"
+            ],
+            "webOrigins": [
+              "https://*"
+            ],
+            "defaultClientScopes": ["web-origins","acr","roles","profile","groups","basic","email"],
+            "optionalClientScopes": ["address","phone","organization","offline_access","microprofile-jwt"]
+          },
+          {
+            "clientId": "svc-trino-polaris-writer",
+            "name": "svc-trino-polaris-writer",
+            "secret": "myTrinoPolarisSecret",
+            "redirectUris": [
+            ],
+            "webOrigins": [
+            ],
+            "defaultClientScopes": ["groups","roles","profile","email"],
+            "serviceAccountsEnabled": true,
+            "standardFlowEnabled": false,
+            "implicitFlowEnabled": false,
+            "directAccessGrantsEnabled": false
+          },
+          {
+            "clientId": "svc-trino-examples-writer",
+            "name": "svc-trino-examples-writer",
+            "secret": "myTrinoExamplesSecret",
+            "redirectUris": [
+            ],
+            "webOrigins": [
+            ],
+            "defaultClientScopes": ["groups","roles","profile","email"],
+            "serviceAccountsEnabled": true,
+            "standardFlowEnabled": false,
+            "implicitFlowEnabled": false,
+            "directAccessGrantsEnabled": false
+          },
+          {
+            "clientId": "svc-polaris-api-admin",
+            "name": "svc-polaris-api-admin",
+            "secret": "myPolarisAdminSecret",
+            "redirectUris": [
+            ],
+            "webOrigins": [
+            ],
+            "defaultClientScopes": ["groups","roles","profile","email"],
+            "serviceAccountsEnabled": true,
+            "standardFlowEnabled": false,
+            "implicitFlowEnabled": false,
+            "directAccessGrantsEnabled": false
+          },
+          {
+            "clientId": "svc-spark-etl-polaris-writer",
+            "name": "svc-spark-etl-polaris-writer",
+            "secret": "mySparkAppSecret",
+            "redirectUris": [
+            ],
+            "webOrigins": [
+            ],
+            "defaultClientScopes": ["groups","roles","profile","email"],
+            "serviceAccountsEnabled": true,
+            "standardFlowEnabled": false,
+            "implicitFlowEnabled": false,
+            "directAccessGrantsEnabled": false
+          }
+        ],
+        "clientScopes": [
+          {
+            "id": "groups-scope-id",
+            "name": "groups",
+            "description": "Groups scope",
+            "protocol": "openid-connect",
+            "attributes": {
+              "display.on.consent.screen": "true",
+              "include.in.token.scope": "false"
+            },
+            "protocolMappers": [
+              {
+                "id": "roles_map_to_groups-mapper-id",
+                "name": "roles_map_to_groups",
+                "protocol": "openid-connect",
+                "protocolMapper": "oidc-usermodel-realm-role-mapper",
+                "consentRequired": false,
+                "config": {
+                  "access.token.claim": "true",
+                  "claim.name": "groups",
+                  "id.token.claim": "true",
+                  "introspection.token.claim": "true",
+                  "jsonType.label": "String",
+                  "lightweight.claim": "true",
+                  "multivalued": "true",
+                  "userinfo.token.claim": "true"
+                }
+              }
+            ]
+          }
+        ],
+        "accessTokenLifespan": 3600
+      }
+  enabled: true
+  image:
+    registry: quay.io
+    repository: okdp/sandbox-images/keycloak-config-cli
+    tag: 6.4.0-debian-12-r0
+postgresql:
+  enabled: false
+production: false
+resources:
+  limits:
+    cpu: "1"
+    memory: 4Gi
+  requests:
+    cpu: 500m
+    memory: 2Gi
