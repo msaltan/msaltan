@@ -1,0 +1,98 @@
+kubectl -n keycloak logs \
+  job/keycloak-main-keycloak-config-cli
+Found 2 pods, using pod/keycloak-main-keycloak-config-cli-bshn8
+2026-09-07T12:28:30.750Z  INFO 1 --- [           main] d.a.k.config.KeycloakConfigApplication   : Starting KeycloakConfigApplication v6.4.0 using Java 21.0.6 with PID 1 (/opt/bitnami/keycloak-config-cli/keycloak-config-cli-26.1.0.jar started by ? in /opt/bitnami/keycloak-config-cli)
+2026-09-07T12:28:30.754Z  INFO 1 --- [           main] d.a.k.config.KeycloakConfigApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-09-07T12:28:32.944Z  INFO 1 --- [           main] d.a.k.config.KeycloakConfigApplication   : Started KeycloakConfigApplication in 3.684 seconds (process running for 5.273)
+2026-09-07T12:28:35.143Z  INFO 1 --- [           main] d.a.k.config.KeycloakConfigRunner        : Importing file 'file:/config/master.json'
+2026-09-07T12:28:36.049Z  INFO 1 --- [           main] d.a.k.config.provider.KeycloakProvider   : Wait 120 seconds until http://keycloak-main-headless:8080/ is available ...
+2026-09-07T12:30:37.106Z ERROR 1 --- [           main] d.a.k.config.KeycloakConfigRunner        : Error during Keycloak import: Could not connect to keycloak in 120 seconds: RESTEASY004655: Unable to invoke request: java.net.NoRouteToHostException: No route to host
+
+de.adorsys.keycloak.config.exception.KeycloakProviderException: Could not connect to keycloak in 120 seconds: RESTEASY004655: Unable to invoke request: java.net.NoRouteToHostException: No route to host
+	at de.adorsys.keycloak.config.provider.KeycloakProvider.getKeycloakWithRetry(KeycloakProvider.java:147)
+	at de.adorsys.keycloak.config.provider.KeycloakProvider.createKeycloak(KeycloakProvider.java:118)
+	at de.adorsys.keycloak.config.provider.KeycloakProvider.getInstance(KeycloakProvider.java:86)
+	at de.adorsys.keycloak.config.repository.RealmRepository.getResource(RealmRepository.java:63)
+	at de.adorsys.keycloak.config.repository.RealmRepository.get(RealmRepository.java:67)
+	at de.adorsys.keycloak.config.repository.RealmRepository.exists(RealmRepository.java:54)
+	at de.adorsys.keycloak.config.service.RealmImportService.doImport(RealmImportService.java:147)
+	at de.adorsys.keycloak.config.KeycloakConfigRunner.run(KeycloakConfigRunner.java:89)
+	at org.springframework.boot.SpringApplication.lambda$callRunner$5(SpringApplication.java:790)
+	at org.springframework.util.function.ThrowingConsumer$1.acceptWithException(ThrowingConsumer.java:83)
+	at org.springframework.util.function.ThrowingConsumer.accept(ThrowingConsumer.java:60)
+	at org.springframework.util.function.ThrowingConsumer$1.accept(ThrowingConsumer.java:88)
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:798)
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:789)
+	at org.springframework.boot.SpringApplication.lambda$callRunners$3(SpringApplication.java:774)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(Unknown Source)
+	at java.base/java.util.stream.SortedOps$SizedRefSortingSink.end(Unknown Source)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(Unknown Source)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(Unknown Source)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(Unknown Source)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(Unknown Source)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(Unknown Source)
+	at java.base/java.util.stream.ReferencePipeline.forEach(Unknown Source)
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:774)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:342)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at de.adorsys.keycloak.config.KeycloakConfigApplication.main(KeycloakConfigApplication.java:34)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:102)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64)
+	at org.springframework.boot.loader.launch.PropertiesLauncher.main(PropertiesLauncher.java:580)
+
+2026-09-07T12:30:37.109Z  INFO 1 --- [           main] d.a.k.config.KeycloakConfigRunner        : keycloak-config-cli ran in 02:02.781.
+[root@localhost myplatform-packages]# kubectl -n keycloak get events \
+  --sort-by='.lastTimestamp' | tail -50
+29m         Warning   BackoffLimitExceeded   job/keycloak-main-keycloak-config-cli         Job has reached the specified backoff limit
+28m         Normal    Created                pod/keycloak-main-keycloak-config-cli-xhtnt   Container created
+28m         Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-xhtnt   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+28m         Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-xhtnt
+28m         Normal    Started                pod/keycloak-main-keycloak-config-cli-xhtnt   Container started
+26m         Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-sckhh
+26m         Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-sckhh   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+26m         Normal    Created                pod/keycloak-main-keycloak-config-cli-sckhh   Container created
+26m         Normal    Started                pod/keycloak-main-keycloak-config-cli-sckhh   Container started
+24m         Warning   BackoffLimitExceeded   job/keycloak-main-keycloak-config-cli         Job has reached the specified backoff limit
+22m         Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-jdbcm
+22m         Normal    Created                pod/keycloak-main-keycloak-config-cli-jdbcm   Container created
+22m         Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-jdbcm   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+22m         Normal    Started                pod/keycloak-main-keycloak-config-cli-jdbcm   Container started
+20m         Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-dclv9   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+20m         Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-dclv9
+20m         Normal    Created                pod/keycloak-main-keycloak-config-cli-dclv9   Container created
+20m         Normal    Started                pod/keycloak-main-keycloak-config-cli-dclv9   Container started
+18m         Warning   BackoffLimitExceeded   job/keycloak-main-keycloak-config-cli         Job has reached the specified backoff limit
+17m         Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-8x5r5
+17m         Normal    Started                pod/keycloak-main-keycloak-config-cli-8x5r5   Container started
+17m         Normal    Created                pod/keycloak-main-keycloak-config-cli-8x5r5   Container created
+17m         Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-8x5r5   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+14m         Normal    Started                pod/keycloak-main-keycloak-config-cli-4cgjq   Container started
+14m         Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-4cgjq
+14m         Normal    Created                pod/keycloak-main-keycloak-config-cli-4cgjq   Container created
+14m         Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-4cgjq   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+12m         Warning   BackoffLimitExceeded   job/keycloak-main-keycloak-config-cli         Job has reached the specified backoff limit
+11m         Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-dpnq6
+11m         Normal    Started                pod/keycloak-main-keycloak-config-cli-dpnq6   Container started
+11m         Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-dpnq6   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+11m         Normal    Created                pod/keycloak-main-keycloak-config-cli-dpnq6   Container created
+9m17s       Normal    Started                pod/keycloak-main-keycloak-config-cli-h5dz4   Container started
+9m17s       Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-h5dz4   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+9m17s       Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-h5dz4
+9m17s       Normal    Created                pod/keycloak-main-keycloak-config-cli-h5dz4   Container created
+7m4s        Warning   BackoffLimitExceeded   job/keycloak-main-keycloak-config-cli         Job has reached the specified backoff limit
+5m59s       Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-bshn8
+5m58s       Normal    Started                pod/keycloak-main-keycloak-config-cli-bshn8   Container started
+5m58s       Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-bshn8   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+5m58s       Normal    Created                pod/keycloak-main-keycloak-config-cli-bshn8   Container created
+3m38s       Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-449qw   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+3m38s       Normal    Created                pod/keycloak-main-keycloak-config-cli-449qw   Container created
+3m38s       Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-449qw
+3m37s       Normal    Started                pod/keycloak-main-keycloak-config-cli-449qw   Container started
+85s         Warning   BackoffLimitExceeded   job/keycloak-main-keycloak-config-cli         Job has reached the specified backoff limit
+18s         Normal    Created                pod/keycloak-main-keycloak-config-cli-vk78l   Container created
+18s         Normal    Started                pod/keycloak-main-keycloak-config-cli-vk78l   Container started
+18s         Normal    Pulled                 pod/keycloak-main-keycloak-config-cli-vk78l   Container image "quay.io/okdp/sandbox-images/keycloak-config-cli:6.4.0-debian-12-r0" already present on machine and can be accessed by the pod
+18s         Normal    SuccessfulCreate       job/keycloak-main-keycloak-config-cli         Created pod: keycloak-main-keycloak-config-cli-vk78l
