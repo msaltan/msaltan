@@ -217,7 +217,9 @@ curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
 
 ~ $ curl -v --connect-timeout 5 http://keycloak-main-headless:8080/
 * Host keycloak-main-headless:8080 was resolved.
-* IPv6: (none)
+* IPv6: (none)kubectl -n keycloak delete job keycloak-main-keycloak-config-cli
+flux reconcile helmrelease keycloak-main -n keycloak
+
 * IPv4: 10.42.0.244
 *   Trying 10.42.0.244:8080...
 * connect to 10.42.0.244 port 8080 from 10.42.0.67 port 51402 failed: Host is unreachable
@@ -227,4 +229,14 @@ curl: (7) Failed to connect to keycloak-main-headless port 8080 after 1 ms: Coul
 
 
 
+# Takılı kalmış Endpoint objesini silin (Kubernetes otomatik olarak güncel IP ile tekrar oluşturacaktır)
+kubectl -n keycloak delete endpoints keycloak-main-headless
+
+kubectl -n keycloak rollout restart statefulset keycloak-main
+# (veya Deployment kullanıyorsanız)
+kubectl -n keycloak rollout restart deployment keycloak-main
+
+
+kubectl -n keycloak delete job keycloak-main-keycloak-config-cli
+flux reconcile helmrelease keycloak-main -n keycloak
 
