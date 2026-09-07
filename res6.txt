@@ -1,0 +1,74 @@
+`keycloak-config-cli` servis adresini `http://keycloak-main:8080` yapacak yamlları aşağıda bulabilirsiniz. Durumunuza göre **Flux/GitOps** yöntemi veya **Anlık K8s Patch (kubectl)** yöntemiyle uygulayabilirsiniz.
+
+---
+
+### 1. Flux / GitOps İçin Manifest Patch (Önerilen)
+
+Eğer Flux yapınızda `kustomize.toolkit.fluxcd.io` Kustomization nesnesi veya local `kustomization.yaml` ile patch atıyorsanız kullanabileceğiniz Strategic Merge Patch YAML'ı:
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keycloak-main
+  namespace: keycloak
+spec:
+  values:
+    keycloakConfigCli:
+      keycloak:
+        url: "http://keycloak-main:8080"
+
+```
+
+---
+
+### 2. `kubectl` ile Anlık Patch (Hızlı Test İçin)
+
+Eğer reponuzu güncellemeden önce doğrudan cluster üzerinde denemek isterseniz aşağıdaki `kubectl patch` komutunu çalıştırabilirsiniz:
+
+```bash
+kubectl patch helmrelease keycloak-main -n keycloak --type=merge -p '{
+  "spec": {
+    "values": {
+      "keycloakConfigCli": {
+        "keycloak": {
+          "url": "http://keycloak-main:8080"
+        }
+      }
+    }
+  }
+}'
+
+```
+
+---
+
+### 3. İşlemi Tamamlama Adımları
+
+Patch'i uyguladıktan sonra takılmış olan Job'ı silip Flux'ı tetikleyin:
+
+1. **Başarısız Olan Job'ı Silin:** 1. Adım.
+Kubernetes üzerindeki eski `BackoffLimitExceeded` durumunda kalmış Job'ı kaldırın:
+
+```bash
+kubectl -n keycloak delete job keycloak-main-keycloak-config-cli
+
+```
+
+
+2. **Flux Sync Tetikleyin:** 2. Adım.
+HelmRelease'in yeni `values` ile tekrar render edilip uygulanmasını sağlayın:
+
+```bash
+flux reconcile helmrelease keycloak-main -n keycloak
+
+```
+
+
+3. **Yeni Job Loglarını Kontrol Edin:** 3. Adım.
+Yeni oluşan pod'un loglarından bağlantının başarılı olduğunu doğrulayın:
+
+```bash
+kubectl -n keycloak logs -f job/keycloak-main-keycloak-config-cli
+
+```
