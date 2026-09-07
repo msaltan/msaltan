@@ -260,3 +260,34 @@ kubectl -n keycloak delete job keycloak-main-keycloak-config-cli
 flux reconcile helmrelease keycloak-main -n kubocd-system --force
 
 
+
+
+kubectl -n keycloak delete job keycloak-main-keycloak-config-cli --ignore-not-found
+# Son takılı kalan Helm secret'ını bulun ve silin
+kubectl -n keycloak get secret -l owner=helm,name=keycloak-main 
+kubectl -n keycloak delete secret -l owner=helm,name=keycloak-main,status=pending-upgrade --ignore-not-found
+
+# HelmRelease üzerinde timeout ve force güncelemesi yapın
+kubectl patch helmrelease keycloak-main -n kubocd-system --type=merge -p '{
+  "spec": {
+    "timeout": "10m",
+    "force": true,
+    "values": {
+      "keycloakConfigCli": {
+        "enabled": false
+      }
+    }
+  }
+}'
+
+flux reconcile helmrelease keycloak-main -n keycloak --with-source
+
+flux suspend helmrelease keycloak-main -n keycloak
+kubectl -n keycloak delete statefulset,deployment,job,pod,svc,configmap,secret --all
+kubectl -n keycloak delete secret -l owner=helm
+# 1. Askı durumundan çıkarın
+flux resume helmrelease keycloak-main -n keycloak
+
+# 2. Temiz kurulumu tetikleyin
+flux reconcile helmrelease keycloak-main -n keycloak --with-source
+
