@@ -2,6 +2,21 @@
 
 ---
 
+  Normal   HelmChartCreated  4m37s  helm-controller  Created HelmChart/kubocd-system/kubocd-system-keycloak-main with SourceRef 'HelmRepository/kubocd-system/kcd-keycloak'
+  Warning  InstallFailed     3m50s  helm-controller  Helm install failed for release keycloak/keycloak-main with chart keycloak@24.4.11: failed post-install: warning: Hook post-install keycloak/templates/keycloak-config-cli-job.yaml failed: server-side apply failed for object keycloak/keycloak-main-keycloak-config-cli batch/v1, Kind=Job: failed to create typed patch object (keycloak/keycloak-main-keycloak-config-cli; batch/v1, Kind=Job): errors:
+  .spec.template.spec.containers[name="keycloak-config-cli"].env: duplicate entries for key [name="KEYCLOAK_URL"]
+  .spec.template.spec.containers[name="keycloak-config-cli"].env: duplicate entries for key [name="KEYCLOAK_AVAILABILITYCHECK_ENABLED"]
+
+  enabled: true
+  extraEnvVars:
+    - name: KEYCLOAK_URL
+      value: http://keycloak-main:8080
+    - name: KEYCLOAK_AVAILABILITYCHECK_TIMEOUT
+      value: 300s
+    - name: KEYCLOAK_AVAILABILITYCHECK_ENABLED
+      value: "true"
+
+
 ### 1. Flux / GitOps İçin Manifest Patch (Önerilen)
 
 Eğer Flux yapınızda `kustomize.toolkit.fluxcd.io` Kustomization nesnesi veya local `kustomization.yaml` ile patch atıyorsanız kullanabileceğiniz Strategic Merge Patch YAML'ı:
