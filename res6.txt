@@ -240,3 +240,23 @@ kubectl -n keycloak rollout restart deployment keycloak-main
 kubectl -n keycloak delete job keycloak-main-keycloak-config-cli
 flux reconcile helmrelease keycloak-main -n keycloak
 
+
+
+kubectl patch helmrelease keycloak-main -n keycloak --type=merge -p '{
+  "spec": {
+    "values": {
+      "keycloakConfigCli": {
+        "enabled": false
+      }
+    }
+  }
+}'
+
+# 1. Hata veren Job'ı silin
+kubectl -n keycloak delete endpoints keycloak-main-headless
+kubectl -n keycloak delete job keycloak-main-keycloak-config-cli
+
+# 2. Flux synchronisation yapın
+flux reconcile helmrelease keycloak-main -n kubocd-system --force
+
+
