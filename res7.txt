@@ -1,0 +1,104 @@
+keycloak-main   nginx   keycloak.iettaidos.sandbox   10.43.136.74   80, 443   7h13m
+
+[root@iett-lakehouse-dev myplatform-packages]# kubectl -n keycloak describe ingress keycloak-main
+Name:             keycloak-main
+Labels:           app.kubernetes.io/component=keycloak
+                  app.kubernetes.io/instance=keycloak-main
+                  app.kubernetes.io/managed-by=Helm
+                  app.kubernetes.io/name=keycloak
+                  app.kubernetes.io/version=26.1.3
+                  helm.sh/chart=keycloak-24.4.11
+                  helm.toolkit.fluxcd.io/name=keycloak-main
+                  helm.toolkit.fluxcd.io/namespace=kubocd-system
+Namespace:        keycloak
+Address:          10.43.136.74
+Ingress Class:    nginx
+Default backend:  <default>
+TLS:
+  keycloak.iettaidos.sandbox-tls terminates keycloak.iettaidos.sandbox
+Rules:
+  Host                        Path  Backends
+  ----                        ----  --------
+  keycloak.iettaidos.sandbox  
+                              /   keycloak-main:http (10.42.0.126:8080)
+Annotations:                  cert-manager.io/cluster-issuer: default-issuer
+                              meta.helm.sh/release-name: keycloak-main
+                              meta.helm.sh/release-namespace: keycloak
+                              nginx.ingress.kubernetes.io/backend-protocol: HTTP
+                              nginx.ingress.kubernetes.io/force-ssl-redirect: true
+Events:                       <none>
+
+
+kubectl -n keycloak get svc
+NAME                     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+keycloak-main            ClusterIP   10.43.138.25   <none>        80/TCP     7h16m
+keycloak-main-headless   ClusterIP   None           <none>        8080/TCP   7h16m
+kubectl -n kube-system get pods -o wide | grep -i ingress
+curl -vk \
+  -H "Host: keycloak.iettaidos.sandbox" \
+  https://127.0.0.1/
+*   Trying 127.0.0.1:443...
+* Connected to 127.0.0.1 (127.0.0.1) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: /etc/pki/tls/certs/ca-bundle.crt
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.3 (IN), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.2 (OUT), TLS header, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS header, Unknown (23):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=TRAEFIK DEFAULT CERT
+*  start date: Sep  7 22:43:48 2026 GMT
+*  expire date: Sep  7 22:43:48 2027 GMT
+*  issuer: CN=TRAEFIK DEFAULT CERT
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* TLSv1.2 (OUT), TLS header, Unknown (23):
+* TLSv1.2 (OUT), TLS header, Unknown (23):
+* TLSv1.2 (OUT), TLS header, Unknown (23):
+* Using Stream ID: 1 (easy handle 0x563d983d8810)
+* TLSv1.2 (OUT), TLS header, Unknown (23):
+> GET / HTTP/2
+> Host: keycloak.iettaidos.sandbox
+> user-agent: curl/7.76.1
+> accept: */*
+> 
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* Connection state changed (MAX_CONCURRENT_STREAMS == 250)!
+* TLSv1.2 (OUT), TLS header, Unknown (23):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+< HTTP/2 404 
+< content-type: text/plain; charset=utf-8
+< x-content-type-options: nosniff
+< content-length: 19
+< date: Tue, 08 Sep 2026 16:37:34 GMT
+< 
+* TLSv1.2 (IN), TLS header, Unknown (23):
+404 page not found
+* Connection #0 to host 127.0.0.1 left intact
+
+
+
+
