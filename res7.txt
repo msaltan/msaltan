@@ -1,3 +1,32 @@
+[root@iett-lakehouse-dev myplatform-packages]# kubectl get ingressclass
+NAME                CONTROLLER                      PARAMETERS   AGE
+nginx               k8s.io/ingress-nginx            <none>       17h
+traefik (default)   traefik.io/ingress-controller   <none>       18h
+
+
+
+
+kubectl -n kube-system get svc traefik -o wide
+NAME      TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)                      AGE   SELECTOR
+traefik   LoadBalancer   10.43.77.60   10.100.0.76   80:32745/TCP,443:30606/TCP   18h   app.kubernetes.io/instance=traefik-kube-system,app.kubernetes.io/name=traefik
+
+
+kubectl get pods -A | grep -Ei 'nginx|traefik'
+ingress-nginx    ingress-nginx-main-controller-64f9cb4cf7-r6jgl            1/1     Running     0             17h
+kube-system      helm-install-traefik-crd-jxrdf                            0/1     Completed   0             18h
+kube-system      helm-install-traefik-p55c7                                0/1     Completed   1 (18h ago)   18h
+kube-system      svclb-traefik-474c689c-w5vmh                              2/2     Running     0             18h
+kube-system      traefik-59b7647586-tthhq                                  1/1     Running     0             18h
+
+
+
+
+
+
+
+
+
+
 keycloak-main   nginx   keycloak.iettaidos.sandbox   10.43.136.74   80, 443   7h13m
 
 [root@iett-lakehouse-dev myplatform-packages]# kubectl -n keycloak describe ingress keycloak-main
