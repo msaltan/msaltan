@@ -4,7 +4,7 @@
 - 💞️ I’m looking to collaborate on Workflow, ETL, ELT, BPM Development
 - 📫 You can reach me at mikailsaltan@hotmail.com
 - CJQdaCnopZ
-- v6feC9m4bgq7wLKf CnJVNfmnKdeB2n2Yh9znIW37w1AF4OFI
+- v6feC9m4bgq7wLKf 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 CnJVNfmnKdeB2n2Yh9znIW37w1AF4OFI
 - WmKKVkqRbLXTUUETYrjy wc7yLPloO638RU8uGCffgIZAEJ5K60lxb4Ht8E6k
 - kubectl --namespace=spark-operator port-forward service/proxy-public 8080:http
 - kubectl minio proxy -n minio-operator 2>&1 >/dev/null &
