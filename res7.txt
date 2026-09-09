@@ -1,8 +1,4 @@
-AD erişim bilgileri
-dc.iett.gov.tr
-OU=Kullanicilar,DC=iett,DC=yerel
-kmsuser c1AV095Q
-
+ 
 
 
 
