@@ -7,17 +7,7 @@
 - v6feC9m4bgq7wLKf    CnJVNfmnKdeB2n2Yh9znIW37w1AF4OFI
 - WmKKVkqRbLXTUUETYrjy wc7yLPloO638RU8uGCffgIZAEJ5K60lxb4Ht8E6k
 - kubectl --namespace=spark-operator port-forward service/proxy-public 8080:http
-- kubectl minio proxy -n minio-operator 2>&1 >/dev/null &
-keycloak.iettaidos.sandbox okdp-ui.iettaidos.sandbox okdp-server.iettaidos.sandbox 
-obs1.iettaidos.sandbox obs1-console.iettaidos.sandbox 
-airflow-default.iettaidos.sandbox seaweedfs-console-default.iettaidos.sandbox
-jupyterhub-default.iettaidos.sandbox 
-trino-default.iettaidos.sandbox 
-polaris-default.iettaidos.sandbox 
-superset-default.iettaidos.sandbox
-
-
-
+- kubectl minio proxy -n minio-operator 2>&1 >/dev/null & 
 
   
 
