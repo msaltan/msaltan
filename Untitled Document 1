@@ -1,0 +1,99 @@
+Konu: *.iett.gov.tr — Platform servisleri için DNS kaydı ve güvenlik duvarı kuralı talebi
+
+Merhaba,
+
+Kubernetes tabanlı veri platformumuzdaki (AIDOS/OKDP) servisler *.iett.gov.tr alt alan adları üzerinden HTTPS ile yayınlanıyor. Şu anda bu isimler kalıcı bir ağ/DNS kaydı olmadığı için istemci makinelerde /etc/hosts dosyasına geçici olarak eklenerek çalıştırılıyor. Bunu kalıcı bir çözüme taşımak istiyoruz, bu yüzden aşağıdaki konularda desteğinize ihtiyacımız var.
+
+1) DNS talebi
+
+Aşağıdaki tüm *.iett.gov.tr adlarının (ya da tek bir wildcard *.iett.gov.tr A kaydının) küme node IP'sine — 10.100.0.76 — çözümlenmesini rica ediyoruz:
+
+Hostname: keycloak.iett.gov.tr
+Servis: Keycloak
+Amaç: Kimlik doğrulama / SSO, admin konsolu
+Amaç: Kimlik doğrulama / SSO, admin konsolu
+────────────────────────────────────────
+Hostname: aidos-ui.iett.gov.tr
+Servis: AIDOS UI
+Amaç: Web arayüzü
+────────────────────────────────────────
+Hostname: aidos-server.iett.gov.tr
+Servis: AIDOS Server
+Amaç: API + Swagger
+────────────────────────────────────────
+Hostname: airflow-default.iett.gov.tr
+Servis: Airflow
+Amaç: İş akışı orkestrasyonu
+────────────────────────────────────────
+Hostname: seaweedfs-default.iett.gov.tr
+Servis: SeaweedFS
+Amaç: S3-uyumlu depolama API/STS
+────────────────────────────────────────
+Hostname: seaweedfs-console-default.iett.gov.tr
+Servis: SeaweedFS Console
+Amaç: Depolama yönetim konsolu
+────────────────────────────────────────
+Hostname: trino-default.iett.gov.tr
+Servis: Trino
+Amaç: SQL sorgu motoru
+────────────────────────────────────────
+Hostname: polaris-default.iett.gov.tr
+Servis: Polaris
+Amaç: Iceberg REST katalog API
+────────────────────────────────────────
+Hostname: polaris-console-default.iett.gov.tr
+Servis: Polaris Console
+Amaç: Katalog yönetim konsolu
+────────────────────────────────────────
+Hostname: jupyterhub-default.iett.gov.tr
+Servis: JupyterHub
+Amaç: Not defteri ortamı
+────────────────────────────────────────
+Hostname: superset-default.iett.gov.tr
+Servis: Superset
+Amaç: BI / dashboard
+────────────────────────────────────────
+Hostname: spark-web-proxy-default.iett.gov.tr
+Servis: Spark Web Proxy
+Amaç: Spark UI erişimi
+────────────────────────────────────────
+Hostname: spark-history-default.iett.gov.tr
+Servis: Spark History Server
+Amaç: Spark iş geçmişi
+────────────────────────────────────────
+Hostname: obs1.iett.gov.tr
+Servis: (obs1 namespace)
+Amaç: Muhtemelen ek bir depolama/servis örneği — teyit edebilirim gerekirse
+────────────────────────────────────────
+Hostname: obs1-console.iett.gov.tr
+Servis: (obs1 namespace, konsol)
+Amaç: Yukarıdakiyle eşleşen yönetim konsolu
+
+Not: default ve obs1 burada namespace adları; platform her namespace için otomatik olarak <servis>-<namespace>.iett.gov.tr deseninde host üretiyor, yani ileride yeni namespace açıldıkça bu liste büyüyecek. Mümkünse tek bir wildcard kayıt (*.iett.gov.tr → 10.100.0.76) bizim için en sürdürülebilir çözüm olur.
+
+2) Güvenlik duvarı — gelen (inbound) trafik
+
+Tüm servisler tek bir ingress controller (ingress-nginx, hostPort modunda) üzerinden 10.100.0.76 adresinde yayınlanıyor:
+- TCP 443 (HTTPS, asıl trafik — wildcard sertifika *.iett.gov.tr ile TLS sonlandırılıyor)
+- TCP 80 (HTTP, yalnızca 443'e redirect için)
+
+Servis bazında ayrı port gerekmiyor, hepsi bu iki portun arkasında path/host bazlı yönlendiriliyor.
+
+3) Güvenlik duvarı — giden (outbound) trafik
+
+Keycloak, kullanıcı doğrulaması için kurumsal Active Directory'e bağlanıyor:
+- Hedef: dc.iett.gov.tr:389 (LDAP, düz metin)
+
+Şu an LDAPS (636) kullanamıyoruz çünkü AD sunucusunun sertifikası Keycloak'un truststore'unda henüz güvenilir değil. Kümeden bu adrese 389 portunun açık olduğunu teyit edebilir misiniz? Ayrıca mümkünse AD sertifikasını (veya kök CA'sını) bize iletebilirseniz, bağlantıyı şifreli LDAPS'a taşıyıp 389'u kapatabiliriz — bu bizim tarafımızdaki bir güvenlik açığı, ayrıca ele almak istiyoruz.
+
+4) Özet talep
+- *.iett.gov.tr (veya yukarıdaki liste) için 10.100.0.76'ya kalıcı DNS kaydı
+- 10.100.0.76 üzerinde TCP 80/443 gelen trafiğe izin
+- Küme → dc.iett.gov.tr:389 giden trafiğe izin (mevcut durum teyidi)
+- Mümkünse AD sertifika/CA paylaşımı (LDAPS geçişi için)
+
+Herhangi bir netleştirme gerekirse memnuniyetle detaylandırırım.
+
+Teşekkürler,
+Mikail Saltan
+Hostname
