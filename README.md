@@ -9,8 +9,7 @@
 - kubectl --namespace=spark-operator port-forward service/proxy-public 8080:http
 - kubectl minio proxy -n minio-operator 2>&1 >/dev/null & 
 
-  https://claude.ai/magic-link#6fc596d728cfa448502dfc7aacd44ada:bWlrYWlsLnNhbHRhbkBpbmZvdGVsaWNhLmNvbQ==
-
+ curl -k https://llm-gateway.iett.gov.tr/health/liveliness
  
 <!---
 msaltan/msaltan is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
